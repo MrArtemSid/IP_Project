@@ -42,7 +42,7 @@
       webusb.close();
     };
 
-    let sideload = async () => {
+    let adb_sideload = async () => {
       if (webusb.isAdb()) {
         let flashing = true;
         let progress = 0;
@@ -119,6 +119,7 @@
       document.getElementById('connect').onclick = connect;
       document.getElementById('disconnect').onclick = disconnect;
       document.getElementById('show_btn').onclick = adb_shell;
+      document.getElementById('sideload').onclick = adb_sideload;
       document.getElementById('clear').onclick = () => {
         document.getElementById('log').innerText = '';
       };
@@ -135,6 +136,10 @@
 <input type="text" id="shell_input" />
 <button id="show_btn">show</button></br>
 
+<input type="file" class="btn" id="file">
+<button id="sideload">sideload</button>
+<br />
+<br />
 <button id="disconnect">Disconnect</button>
 <br />
 <br />
