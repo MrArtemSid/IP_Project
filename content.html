@@ -2,6 +2,7 @@
 <html>
 <head>
   <script src="scripts/webadb.js"></script>
+  <script src="scripts/readFile.js"></script>
   <script>
     let adb;
     let webusb;
@@ -39,6 +40,53 @@
     let disconnect = async () => {
       log('disconnect');
       webusb.close();
+    };
+
+    let sideload = async () => {
+      if (webusb.isAdb()) {
+        let flashing = true;
+        let progress = 0;
+
+        try {
+          adb = null;
+          adb = await webusb.connectAdb("host::", () => {
+            log("Please check the screen of your " + webusb.device.productName + ".");
+          });
+        } catch (error) {
+          log(error);
+          adb = null;
+        }
+
+        const chunk_size = 64 * 1024;
+        let reader = new FileReader();
+        let fileToRead = document.getElementById('file').files[0];
+        const content = await readFile(fileToRead);
+        const stream = await adb.open(`sideload-host:${content.length}:${chunk_size}`);
+        let progressTotal = content.length;
+        while (flashing) {
+          const response = await stream.receive();
+          if (response.cmd == 'OKAY') {
+            await stream.send('OKAY');
+          }
+          if (response.cmd != 'WRTE') {
+            continue;
+          }
+          const result = new TextDecoder("utf-8").decode(response.data);
+          if (result == 'DONEDONE' || result == 'FAILFAIL') {
+            flashing = false;
+            break;
+          }
+          const start = parseInt(result) * chunk_size;
+          let end = start + chunk_size;
+          if (end > content.length) {
+            end = content.length;
+          }
+          const data = content.slice(start, end);
+          await stream.send('WRTE', data);
+          await stream.send('OKAY');
+          progress += data.length;
+        }
+      }
     };
 
     let add_ui = () => {
