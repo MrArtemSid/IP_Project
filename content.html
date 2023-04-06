@@ -21,6 +21,10 @@
       webusb = await Adb.open("WebUSB");
     };
 
+    let show_error = async () => {
+      alert("Please connect device first");
+    };
+
     let connect = async () => {
       await init();
       log('connect');
@@ -43,6 +47,10 @@
     };
 
     let adb_sideload = async () => {
+      if (!webusb) {
+        await show_error();
+        return;
+      }
       if (webusb.isAdb()) {
         let flashing = true;
         let progress = 0;
@@ -90,6 +98,10 @@
     };
 
     let adb_shell = async () => {
+      if (!webusb) {
+        await show_error();
+        return;
+      }
       if (webusb.isAdb()) {
         try {
           adb = null;
