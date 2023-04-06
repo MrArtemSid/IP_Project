@@ -1,0 +1,72 @@
+body{
+    display: flex;
+    margin: 0;
+    width: 100vh;
+    height: 100vh;
+    background-color: #1c1a1a;
+    overflow-x: hidden;
+}
+.input_text{
+    background-color: #999999;
+    border-radius: 8px;
+    font-family: 'Arial Black', 'Arial Обычный', 'Arial', sans-serif;
+    border-width: 3px;
+}
+.btn{
+    padding: 8px;
+    background-color: #bdbdbd;
+    border-radius: 8px;
+    font-family: 'Arial Black', 'Arial Обычный', 'Arial', sans-serif;
+    transition: 0.2s;
+}
+.btn:hover{
+    color: white;
+    background-color: #1c1a1a;
+    transform: scale(1.1);
+}
+
+.content{
+    color: white;
+    margin: 10px;
+}
+.image_menu{
+    margin-left: auto;
+    width: 32;
+    height: 32;
+    justify-content: center;
+    align-content: center;
+}
+.image_menu:hover{
+    cursor: pointer;
+}
+.menu{
+    line-height: 32px;
+    height: 100%;
+    display: block;
+    overflow-x: hidden;
+}
+.point {
+    color: #59c8e1;
+    font-weight: 900;
+    font-family: 'Arial Black', 'Arial Обычный', 'Arial', sans-serif;
+    display: flex;
+    margin: 10px 8px;
+    padding: 8px;
+    text-decoration: none;
+    background-color: #747475;
+    transition: .6s;
+    border-radius: 8px;
+}
+.point:hover{
+    background-color: #2c2c2c;
+    color: white;
+ }
+
+.left_side_menu{
+    display: block;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    width: 20%;
+    background-color: #4f4949;
+}
