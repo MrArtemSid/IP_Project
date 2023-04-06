@@ -41,41 +41,13 @@
         webusb.close();
       };
 
-      let get_ip = async () => {
-        try {
-          if (!adb) throw new Error('Not connected');
-          log('get_ip');
-          let shell = await adb.shell('ip addr show to 0.0.0.0/0 scope global');
-          let response = await shell.receive();
-          let decoder = new TextDecoder('utf-8');
-          let txt = decoder.decode(response.data);
-          log(txt);
-        } catch (error) {
-          log(error);
-        }
-      };
-
-      let tcpip = async () => {
-        try {
-          if (!adb) throw new Error('Not connected');
-          let port = document.getElementById('port').value;
-          log('requesting tcpip mode on port', port);
-          await adb.tcpip(port);
-          log('tcpip connection ready');
-        } catch (error) {
-          log(error);
-        }
-      };
-
       let add_ui = () => {
         // Adb.Opt.use_checksum = false;
         Adb.Opt.debug = true;
         // Adb.Opt.dump = true;
 
         document.getElementById('connect').onclick = connect;
-        document.getElementById('get_ip').onclick = get_ip;
         document.getElementById('disconnect').onclick = disconnect;
-        document.getElementById('tcpip').onclick = tcpip;
 
         document.getElementById('clear').onclick = () => {
           document.getElementById('log').innerText = '';
@@ -87,15 +59,6 @@
   </head>
   <body>
     <button id="connect">Connect</button>
-    <br />
-    <br />
-
-    <button id="get_ip">Get IP addr</button>
-    <br />
-    <br />
-
-    <input type="text" id="port" value="5555" />
-    <button id="tcpip" value="tcpip">tcpip</button>
     <br />
     <br />
 
