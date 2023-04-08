@@ -112,7 +112,7 @@
 		let match = this.find(filter);
 		return this.device.selectConfiguration(match.conf.configurationValue)
 			.then(() => this.device.claimInterface(match.intf.interfaceNumber))
-			.then(() => this.device.selectAlternateInterface(match.intf.interfaceNumber, match.alt.alternateSetting))
+			//.then(() => this.device.selectAlternateInterface(match.intf.interfaceNumber, match.alt.alternateSetting))
 			.then(() => match);
 	};
 
