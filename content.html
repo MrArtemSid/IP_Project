@@ -56,16 +56,6 @@
         let flashing = true;
         let progress = 0;
 
-        try {
-          adb = null;
-          adb = await webusb.connectAdb("host::", () => {
-            log("Please check the screen of your " + webusb.device.productName + ".");
-          });
-        } catch (error) {
-          log(error);
-          adb = null;
-        }
-
         const chunk_size = 64 * 1024;
         let reader = new FileReader();
         let fileToRead = document.getElementById('file').files[0];
@@ -105,11 +95,6 @@
       }
       if (webusb.isAdb()) {
         try {
-          adb = null;
-          adb = await webusb.connectAdb("host::", () => {
-            log("Please check the screen of your " + webusb.device.productName + ".");
-          });
-
           let shell = await adb.shell(document.getElementById('shell_input').value);
           let response = await shell.receive();
           let decoder = new TextDecoder('utf-8');
