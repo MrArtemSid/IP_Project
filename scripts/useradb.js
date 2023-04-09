@@ -83,23 +83,30 @@ let adb_sideload = async () => {
 };
 
 let adb_shell = async () => {
+    let command = document.getElementById('shell_input').value;
+    let decoder = new TextDecoder();
     if (!webusb) {
         await show_error();
         return;
     }
-    if (webusb.isAdb()) {
-        try {
-            let shell = await adb.shell(document.getElementById('shell_input').value);
-            let response = await shell.receive();
-            let decoder = new TextDecoder('utf-8');
-            let txt = "";
-            if (response.data)
-                txt = decoder.decode(response.data);
-            log(txt);
-        } catch(error) {
-            log(error);
-            adb = null;
+    try {
+        if (adb != null) {
+            let shell, response;
+            shell = await adb.open("shell:" + command);
+            response = await shell.receive();
+            while (response.cmd == "WRTE") {
+                if (response.data != null) {
+                    log(decoder.decode(response.data));
+                }
+                shell.send("OKAY");
+                response = await shell.receive();
+            }
+            shell.close();
+            shell = null;
         }
+    } catch (error) {
+        console.log(error);
+        webusb = null;
     }
 };
 
