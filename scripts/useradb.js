@@ -1,5 +1,9 @@
 let adb;
 let webusb;
+let input;
+let btn;
+let area;
+
 
 let log = (...args) => {
     if (args[0] instanceof Error) {
@@ -7,12 +11,14 @@ let log = (...args) => {
     } else {
         console.log.apply(console, args);
     }
-    document.getElementById('log').innerText += args.join(' ') + '\n';
+    document.getElementById('area').innerHTML += args.join(' ') + '<br>';
+    area.scrollTop = area.scrollHeight;
 };
 
 let init = async () => {
     log('init');
     webusb = await Adb.open("WebUSB");
+    log("init end");
 };
 
 let show_error = async () => {
@@ -28,6 +34,7 @@ let connect = async () => {
             adb = await webusb.connectAdb("host::", () => {
                 log("Please check the screen of your " + webusb.device.productName + ".");
             });
+            log("connected");
         } catch(error) {
             log(error);
             adb = null;
@@ -37,7 +44,8 @@ let connect = async () => {
 
 let disconnect = async () => {
     log('disconnect');
-    webusb.close();
+    if(webusb)
+        webusb.close();
 };
 
 let adb_sideload = async () => {
@@ -48,16 +56,6 @@ let adb_sideload = async () => {
     if (webusb.isAdb()) {
         let flashing = true;
         let progress = 0;
-
-        try {
-            adb = null;
-            adb = await webusb.connectAdb("host::", () => {
-                log("Please check the screen of your " + webusb.device.productName + ".");
-            });
-        } catch (error) {
-            log(error);
-            adb = null;
-        }
 
         const chunk_size = 64 * 1024;
         let reader = new FileReader();
@@ -91,39 +89,66 @@ let adb_sideload = async () => {
     }
 };
 
-let adb_shell = async () => {
-    if (!webusb) {
-        await show_error();
+let execute_usb = async () =>
+{
+    let play = true;
+    let command = document.getElementById('shell_input').value;
+    let decoder = new TextDecoder();
+    if(command == "clear"){
+        area.innerHTML = "";
         return;
     }
-    if (webusb.isAdb()) {
-        try {
-            let shell = await adb.shell(document.getElementById('shell_input').value);
-            let response = await shell.receive();
-            let decoder = new TextDecoder('utf-8');
-            let txt = "";
-            if (response.data)
-                txt = await decoder.decode(response.data);
-            log(txt);
-        } catch(error) {
-            log(error);
-            adb = null;
+
+    try {
+        if (adb != null ) {
+
+            shell = await adb.open("shell:"+ command);
+            r = await shell.receive();
+            while (r.cmd == "WRTE" && play) {
+                if (r.data != null) {
+                    area.innerHTML += (decoder.decode(r.data));
+                    area.scrollTop = area.scrollHeight;
+                }
+
+                shell.send("OKAY");
+                r = await shell.receive();
+            }
+            shell.close();
+            shell = null;
         }
     }
-};
+    catch(error) {
+        console.log(error);
+        webusb = null;
+    }
+}
 
 let add_ui = () => {
     //Adb.Opt.use_checksum = true;
     Adb.Opt.debug = true;
     Adb.Opt.dump = true;
 
+    input = document.getElementById('shell_input');
+    btn = document.getElementById('show_btn');
+    area = document.getElementById('area');
+
     document.getElementById('connect').onclick = connect;
     document.getElementById('disconnect').onclick = disconnect;
-    document.getElementById('show_btn').onclick = adb_shell;
+    document.getElementById('show_btn').onclick = execute_usb;
     document.getElementById('sideload').onclick = adb_sideload;
     document.getElementById('clear').onclick = () => {
-        document.getElementById('log').innerText = '';
+        document.getElementById('area').innerHTML = '';
     };
 };
+function enter_msg(e){
+    if (e.key == "Enter"){
+        area.innerHTML += "<font color='white' style='font-weight: bold'> >> " + input.value + "</font><br>" ;
+        area.scrollTop = area.scrollHeight;
+        execute_usb();
+        input.value = "";
+    }
+}
+
+addEventListener("keydown",enter_msg);
 
 document.addEventListener('DOMContentLoaded', add_ui, false);
