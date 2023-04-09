@@ -43,9 +43,13 @@ let connect = async () => {
 };
 
 let disconnect = async () => {
+    if(!webusb) {
+        show_error();
+        return;
+    }
+    webusb.close();
     log('disconnect');
-    if(webusb)
-        webusb.close();
+    webusb = null
 };
 
 let adb_sideload = async () => {
@@ -89,8 +93,7 @@ let adb_sideload = async () => {
     }
 };
 
-let adb_shell = async () =>
-{
+let adb_shell = async () => {
     let play = true;
     let command = document.getElementById('shell_input').value;
     let decoder = new TextDecoder();
@@ -99,7 +102,10 @@ let adb_shell = async () =>
         area.innerHTML = "";
         return;
     }
-
+    if (!webusb) {
+        await show_error();
+        return;
+    }
     try {
         if (adb != null ) {
 
@@ -107,10 +113,8 @@ let adb_shell = async () =>
             r = await shell.receive();
             while (r.cmd == "WRTE" && play) {
                 if (r.data != null) {
-                    area.innerHTML += "<br>" + (decoder.decode(r.data));
-                    area.scrollTop = area.scrollHeight;
+                    log(decoder.decode(r.data));
                 }
-
                 shell.send("OKAY");
                 r = await shell.receive();
             }
@@ -146,8 +150,7 @@ function enter_msg(e){
     if (e.key == "Enter"){
         if(!input.value.length || !input.value.match("[0-9a-zA-Z]"))
             return;
-        area.innerHTML += "<font color='white' style='font-weight: bold'><br> >> " + input.value + "</font><br>" ;
-        area.scrollTop = area.scrollHeight;
+        log("<font color='white' style='font-weight: bold'><br> >> " + input.value + "</font><br>");
         adb_shell();
         input.value = "";
     }
