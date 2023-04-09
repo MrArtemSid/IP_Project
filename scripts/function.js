@@ -4,6 +4,7 @@ let names = ['shell','pull','push','boot'];
 function changeMenu(){
     let menu_div = document.getElementById('menu');
     let child_div = menu_div.childNodes;
+    let container = document.getElementById('container');
     let left_side_menu = document.getElementById('left_side_menu');
     let c = 0;
     if(show){
@@ -13,7 +14,7 @@ function changeMenu(){
                 child_div[i].childNodes[0].textContent = "";
             }
         }
-        left_side_menu.style.width="7%";
+        container.style.gridTemplateColumns = "4% 96%";
 
     }else{
         show = true;
@@ -23,8 +24,8 @@ function changeMenu(){
                 c++;
             }
         }
-        left_side_menu.style.width="20%";
-
+        left_side_menu.style.width="100%";
+        container.style.gridTemplateColumns = "10% 90%";
     }
 }
 
