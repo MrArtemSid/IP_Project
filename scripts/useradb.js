@@ -1,13 +1,11 @@
 let adb;
 let webusb;
+let input;
+let area;
 
 let log = (...args) => {
-    if (args[0] instanceof Error) {
-        console.error.apply(console, args);
-    } else {
-        console.log.apply(console, args);
-    }
-    document.getElementById('log').innerText += args.join(' ') + '\n';
+    document.getElementById('area').innerHTML += args.join(' ') + '<br>';
+    area.scrollTop = area.scrollHeight;
 };
 
 let init = async () => {
@@ -85,6 +83,10 @@ let adb_sideload = async () => {
 let adb_shell = async () => {
     let command = document.getElementById('shell_input').value;
     let decoder = new TextDecoder();
+    if(command == "clear"){
+        area.innerHTML = "";
+        return;
+    }
     if (!webusb) {
         await show_error();
         return;
@@ -115,13 +117,27 @@ let add_ui = () => {
     Adb.Opt.debug = true;
     // Adb.Opt.dump = true;
 
+    input = document.getElementById('shell_input');
+    area = document.getElementById('area');
+
     document.getElementById('connect').onclick = connect;
     document.getElementById('disconnect').onclick = disconnect;
     document.getElementById('show_btn').onclick = adb_shell;
     document.getElementById('sideload').onclick = adb_sideload;
     document.getElementById('clear').onclick = () => {
-        document.getElementById('log').innerText = '';
+        document.getElementById('area').innerText = '';
     };
 };
+
+function enter_msg(e){
+    if (e.key == "Enter"){
+        if(!input.value.length || !input.value.match("[0-9a-zA-Z]"))
+            return;
+        log("<font color='white' style='font-weight: bold'><br> >> " + input.value + "</font><br>");
+        adb_shell();
+        input.value = "";
+    }
+}
+addEventListener("keydown",enter_msg);
 
 document.addEventListener('DOMContentLoaded', add_ui, false);

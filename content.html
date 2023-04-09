@@ -7,20 +7,17 @@
 </head>
 <body>
 <button class="btn" id="connect">Connect</button>
-<br />
-<br />
-
-<input class="input_text" type="text" id="shell_input" />
-<button class="btn" id="show_btn">show</button></br>
-
+<button class="btn" id="disconnect">Disconnect</button>
 <input type="file" class="btn" id="file">
 <button class="btn" id="sideload">sideload</button>
-<br />
-<br />
-<button class="btn" id="disconnect">Disconnect</button>
-<br />
-<br />
-<h2>Messages <button class="btn" id="clear">clear</button></h2>
-<pre id="log"></pre>
+<button class="btn" id="clear">Clear</button>
+<div class="console">
+  <div class="up_console">
+    <font color="green">>><input class="input_shell" id="shell_input" type="text"></font>
+    <button class="btn" id="show_btn" onclick="send()">Send</button>
+  </div>
+  <div id="area" class="area">
+  </div>
+</div>
 </body>
 </html>
