@@ -6,7 +6,7 @@ include_once ('menu.php');
 ?>
 <div class="content">
     <?php
-    include ($page);
+    include_once($page);
     ?>
 </div>
 </div>

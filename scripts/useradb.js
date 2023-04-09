@@ -89,7 +89,7 @@ let adb_sideload = async () => {
     }
 };
 
-let execute_usb = async () =>
+let adb_shell = async () =>
 {
     let play = true;
     let command = document.getElementById('shell_input').value;
@@ -136,7 +136,7 @@ let add_ui = () => {
 
     document.getElementById('connect').onclick = connect;
     document.getElementById('disconnect').onclick = disconnect;
-    document.getElementById('show_btn').onclick = execute_usb;
+    document.getElementById('show_btn').onclick = adb_shell;
     document.getElementById('sideload').onclick = adb_sideload;
     document.getElementById('clear').onclick = () => {
         document.getElementById('area').innerHTML = '';
@@ -148,7 +148,7 @@ function enter_msg(e){
             return;
         area.innerHTML += "<font color='white' style='font-weight: bold'><br> >> " + input.value + "</font><br>" ;
         area.scrollTop = area.scrollHeight;
-        execute_usb();
+        adb_shell();
         input.value = "";
     }
 }
