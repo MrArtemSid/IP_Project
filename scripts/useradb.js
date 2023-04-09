@@ -94,6 +94,7 @@ let execute_usb = async () =>
     let play = true;
     let command = document.getElementById('shell_input').value;
     let decoder = new TextDecoder();
+
     if(command == "clear"){
         area.innerHTML = "";
         return;
@@ -106,7 +107,7 @@ let execute_usb = async () =>
             r = await shell.receive();
             while (r.cmd == "WRTE" && play) {
                 if (r.data != null) {
-                    area.innerHTML += (decoder.decode(r.data));
+                    area.innerHTML += "<br>" + (decoder.decode(r.data));
                     area.scrollTop = area.scrollHeight;
                 }
 
@@ -122,6 +123,7 @@ let execute_usb = async () =>
         webusb = null;
     }
 }
+
 
 let add_ui = () => {
     //Adb.Opt.use_checksum = true;
@@ -142,7 +144,9 @@ let add_ui = () => {
 };
 function enter_msg(e){
     if (e.key == "Enter"){
-        area.innerHTML += "<font color='white' style='font-weight: bold'> >> " + input.value + "</font><br>" ;
+        if(!input.value.length || !input.value.match("[0-9a-zA-Z]"))
+            return;
+        area.innerHTML += "<font color='white' style='font-weight: bold'><br> >> " + input.value + "</font><br>" ;
         area.scrollTop = area.scrollHeight;
         execute_usb();
         input.value = "";

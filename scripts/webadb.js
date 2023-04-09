@@ -22,7 +22,7 @@
 
 	// Set this to false for new devices (post Dec 2017) if
 	// autodetection doesn't handle it automatically.
-	Adb.Opt.use_checksum = true;
+	Adb.Opt.use_checksum = false;
 
 	let db = init_db();
 	let keys = db.then(load_keys);
