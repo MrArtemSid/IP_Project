@@ -6,7 +6,7 @@
     ?>
     <div class="content">
         <?php
-        include ($page);
+        include_once ($page);
         ?>
     </div>
 </div>
