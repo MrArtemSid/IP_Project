@@ -4,7 +4,7 @@ let input;
 let area;
 
 let log = (...args) => {
-    document.getElementById('area').innerHTML += args.join(' ') + '<br>';
+    document.getElementById('area').innerHTML += "<pre>" + args.join(' ') + '<br></pre>';
     area.scrollTop = area.scrollHeight;
 };
 
