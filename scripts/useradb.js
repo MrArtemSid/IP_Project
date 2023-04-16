@@ -11,7 +11,7 @@ let log = (...args) => {
     } else {
         console.log.apply(console, args);
     }
-    document.getElementById('area').innerHTML += args.join(' ') + '<br>';
+    document.getElementById('area').innerHTML += "<pre>" + args.join(' ') + '</pre>';
     area.scrollTop = area.scrollHeight;
 };
 
@@ -94,7 +94,8 @@ let adb_sideload = async () => {
 };
 
 let adb_shell = async () => {
-    let play = true;
+    if(!input.value.length || !input.value.match("[0-9a-zA-Z]"))
+        return;
     let command = document.getElementById('shell_input').value;
     let decoder = new TextDecoder();
 
@@ -110,29 +111,25 @@ let adb_shell = async () => {
         if (adb != null ) {
 
             shell = await adb.open("shell:"+ command);
+
             r = await shell.receive();
-            while (r.cmd == "WRTE" && play) {
+            while (r.cmd == "WRTE") {
                 if (r.data != null) {
                     log(decoder.decode(r.data));
                 }
                 shell.send("OKAY");
                 r = await shell.receive();
             }
-            shell.close();
-            shell = null;
         }
     }
     catch(error) {
         console.log(error);
-        webusb = null;
+        //webusb = null;
     }
 }
-
-
 let add_ui = () => {
     //Adb.Opt.use_checksum = true;
     Adb.Opt.debug = true;
-    Adb.Opt.dump = true;
 
     input = document.getElementById('shell_input');
     btn = document.getElementById('show_btn');
@@ -146,16 +143,25 @@ let add_ui = () => {
         document.getElementById('area').innerHTML = '';
     };
 };
-function enter_msg(e){
-    if (e.key == "Enter"){
-        if(!input.value.length || !input.value.match("[0-9a-zA-Z]"))
+function enter_msg(e, force = false){
+    if ((e != null && e.key == "Enter") || force){
+        if(!input.value.length || !input.value.match("[0-9a-zA-Z]") || !webusb) {
+            show_error();
             return;
-        log("<font color='white' style='font-weight: bold'><br> >> " + input.value + "</font><br>");
+        }
+        log( "<font color='#018686' size='3px' style='background:#fafafa; padding:2px;'>shell</font>" + "<font color='#fafafa' size='3px' style='background:#018686; border-bottom-right-radius: 6px; border-top-right-radius: 6px; padding:2px; padding-right:3px; margin-right:5px;'>→</font>"+input.value + "<br>");
         adb_shell();
         input.value = "";
     }
 }
+function stop_msg(e){
+    if(e.code == "KeyC" && (e.ctrlKey || e.metaKey)){
+        input.value = "^C";
+        enter_msg(null, true);
+    }
+}
 
 addEventListener("keydown",enter_msg);
+addEventListener("keydown",stop_msg);
 
 document.addEventListener('DOMContentLoaded', add_ui, false);
