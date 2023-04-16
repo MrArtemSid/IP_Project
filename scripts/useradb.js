@@ -139,7 +139,7 @@ function enter_msg(e, force = false){
             show_error();
             return;
         }
-        log("<font color='white' style='font-weight: bold'><br> >> " + input.value + "</font><br>");
+        log( "<font color='#018686' size='3px' style='background:#fafafa; padding:2px;'>shell</font>" + "<font color='#fafafa' size='3px' style='background:#018686; border-bottom-right-radius: 6px; border-top-right-radius: 6px; padding:2px; padding-right:3px; margin-right:5px;'>→</font>"+input.value + "<br>");
         adb_shell();
         input.value = "";
     }
