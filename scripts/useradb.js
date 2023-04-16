@@ -83,6 +83,8 @@ let adb_sideload = async () => {
 };
 
 let adb_shell = async () => {
+    if(!input.value.length || !input.value.match("[0-9a-zA-Z]"))
+        return;
     let command = document.getElementById('shell_input').value;
     let decoder = new TextDecoder();
     if(command == "clear"){
@@ -110,7 +112,7 @@ let adb_shell = async () => {
         }
     } catch (error) {
         console.log(error);
-        webusb = null;
+        //webusb = null;
     }
 };
 
@@ -131,15 +133,25 @@ let add_ui = () => {
     };
 };
 
-function enter_msg(e){
-    if (e.key == "Enter"){
-        if(!input.value.length || !input.value.match("[0-9a-zA-Z]"))
+function enter_msg(e, force = false){
+    if ((e != null && e.key == "Enter") || force){
+        if(!input.value.length || !input.value.match("[0-9a-zA-Z]") || !webusb) {
+            show_error();
             return;
+        }
         log("<font color='white' style='font-weight: bold'><br> >> " + input.value + "</font><br>");
         adb_shell();
         input.value = "";
     }
 }
+function stop_msg(e){
+    if(e.code == "KeyC" && (e.ctrlKey || e.metaKey)){
+        input.value = "^C";
+        enter_msg(null, true);
+    }
+}
+
 addEventListener("keydown",enter_msg);
+addEventListener("keydown",stop_msg);
 
 document.addEventListener('DOMContentLoaded', add_ui, false);
