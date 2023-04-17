@@ -2,6 +2,7 @@ let adb;
 let webusb;
 let input;
 let area;
+let shell;
 
 let log = (...args) => {
     document.getElementById('area').innerHTML += "<pre>" + args.join(' ') + '<br></pre>';
@@ -103,9 +104,8 @@ let adb_shell = async () => {
     }
     try {
         if (adb != null) {
-            let shell, response;
             shell = await adb.open("shell:" + command);
-            response = await shell.receive();
+            let response = await shell.receive();
             while (response.cmd == "WRTE") {
                 if (response.data != null) {
                     log(decoder.decode(response.data));
@@ -146,8 +146,7 @@ function enter_msg(e){
 }
 function stop_msg(e){
     if(e.code == "KeyC" && (e.ctrlKey || e.metaKey)){
-        input.value = "^C";
-        enter_msg({'key':'Enter'});
+        shell.close();
     }
 }
 
