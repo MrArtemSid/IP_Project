@@ -9,23 +9,25 @@ let log = (...args) => {
 };
 
 let init = async () => {
-    log('init');
+    log('Инициализация');
     webusb = await Adb.open("WebUSB");
+    log("Инициализация завершена");
 };
 
 let show_error = async () => {
-    alert("Please connect device first");
+    alert("Сначала подключите ваше устройство");
 };
 
 let connect = async () => {
     await init();
-    log('connect');
+    log('Подключение');
     if (webusb.isAdb()) {
         try {
             adb = null;
             adb = await webusb.connectAdb("host::", () => {
-                log("Please check the screen of your " + webusb.device.productName + ".");
+                log("Разрешите отладку на своем устройстве " + webusb.device.productName + ".");
             });
+            log("Подключено");
         } catch(error) {
             log(error);
             adb = null;
@@ -34,7 +36,7 @@ let connect = async () => {
 };
 
 let disconnect = async () => {
-    log('disconnect');
+    log('Отключено');
     webusb.close();
     webusb = null;
 };
