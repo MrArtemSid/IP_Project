@@ -2,8 +2,8 @@ body{
     width: 100%;
     margin: 0;
     background-color: #1c1a1a;
-    overflow-x: hidden;
     overflow-y: hidden;
+    overflow-x: hidden;
 }
 .container{
     height: 100%;
@@ -33,7 +33,6 @@ body{
 }
 
 .content{
-    color: white;
     margin: 10px;
 }
 .image_menu{
@@ -92,8 +91,25 @@ input:focus{
     display: grid;
     grid-template-columns: 80% 20%;
 }
+.area::-webkit-scrollbar {
+    width: 10px;
+    border: 1px gray;
+}
+
+.area::-webkit-scrollbar-thumb{
+    background-color: #357476;
+    border-radius: 20px;
+    min-height: 30%;
+    border: 3px transparent;
+}
+.area::-webkit-scrollbar-thumb:hover {
+    background-color: #4dd4d9;
+    border-radius: 20px;
+    border: 3px transparent;
+}
 .area{
     overflow-y: auto;
+    overflow-x:auto;
     padding: 8px;
     font-size: 12px;
     font-weight: 400;
