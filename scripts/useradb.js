@@ -56,6 +56,7 @@ let adb_sideload = async () => {
         const content = await readFile(fileToRead);
         const stream = await adb.open(`sideload-host:${content.length}:${chunk_size}`);
         let progressTotal = content.length;
+        log("Установка предоставленного пакета")
         while (flashing) {
             const response = await stream.receive();
             if (response.cmd == 'OKAY') {
@@ -78,7 +79,9 @@ let adb_sideload = async () => {
             await stream.send('WRTE', data);
             await stream.send('OKAY');
             progress += data.length;
+            log("Установлено: " + parseInt(progress / progressTotal * 100) + "%");
         }
+        log("Установка завершена");
     }
 };
 
