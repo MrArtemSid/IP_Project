@@ -18,7 +18,6 @@ let log = (...args) => {
 let init = async () => {
     log('Инициализация');
     webusb = await Adb.open("WebUSB");
-    log("Инициализация оконченна");
 };
 
 let show_error = async () => {
@@ -32,7 +31,7 @@ let connect = async () => {
         try {
             adb = null;
             adb = await webusb.connectAdb("host::", () => {
-                log("Разрешите отладку на своем устройстве " + webusb.device.productName + ".");
+                log("Разрешите отладку на своем " + webusb.device.productName + ".");
             });
             log("Подключено");
         } catch(error) {
@@ -94,8 +93,11 @@ let adb_sideload = async () => {
 };
 
 let adb_shell = async () => {
-    if(!input.value.length || !input.value.match("[0-9a-zA-Z]"))
+    if(!input.value.length || !input.value.match("[0-9a-zA-Z]") || !webusb) {
+        show_error();
         return;
+    }
+    log( "<font color='#018686' size='3px' style='background:#fafafa; padding:2px;'>shell</font>" + "<font color='#fafafa' size='3px' style='background:#018686; border-bottom-right-radius: 6px; border-top-right-radius: 6px; padding:2px; padding-right:3px; margin-right:5px;'>→</font>"+input.value + "<br>");
     let command = document.getElementById('shell_input').value;
     let decoder = new TextDecoder();
 
@@ -143,13 +145,8 @@ let add_ui = () => {
         document.getElementById('area').innerHTML = '';
     };
 };
-function enter_msg(e, force = false){
-    if ((e != null && e.key == "Enter") || force){
-        if(!input.value.length || !input.value.match("[0-9a-zA-Z]") || !webusb) {
-            show_error();
-            return;
-        }
-        log( "<font color='#018686' size='3px' style='background:#fafafa; padding:2px;'>shell</font>" + "<font color='#fafafa' size='3px' style='background:#018686; border-bottom-right-radius: 6px; border-top-right-radius: 6px; padding:2px; padding-right:3px; margin-right:5px;'>→</font>"+input.value + "<br>");
+function enter_msg(e){
+    if (e != null && e.key == "Enter"){
         adb_shell();
         input.value = "";
     }
@@ -157,7 +154,7 @@ function enter_msg(e, force = false){
 function stop_msg(e){
     if(e.code == "KeyC" && (e.ctrlKey || e.metaKey)){
         input.value = "^C";
-        enter_msg(null, true);
+        enter_msg({'key':'Enter'});
     }
 }
 
