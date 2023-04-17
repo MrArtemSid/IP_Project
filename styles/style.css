@@ -1,4 +1,5 @@
 body{
+    font-family: 'Arial Black', 'Arial Обычный', 'Arial', sans-serif;
     width: 100%;
     margin: 0;
     background-color: #1c1a1a;
@@ -14,7 +15,6 @@ body{
 .input_text{
     background-color: #999999;
     border-radius: 8px;
-    font-family: 'Arial Black', 'Arial Обычный', 'Arial', sans-serif;
     border-width: 3px;
 }
 .btn{
@@ -23,7 +23,6 @@ body{
     border-radius: 8px;
     font-size: 14px;
     font-weight: 700;
-    font-family: 'Arial Black', 'Arial Обычный', 'Arial', sans-serif;
     transition: 0.2s;
 }
 .btn:hover{
@@ -54,7 +53,6 @@ body{
 .point {
     color: #59c8e1;
     font-weight: 900;
-    font-family: 'Arial Black', 'Arial Обычный', 'Arial', sans-serif;
     display: flex;
     margin: 10px 8px;
     padding: 8px;
@@ -93,19 +91,20 @@ input:focus{
 }
 .area::-webkit-scrollbar {
     width: 10px;
-    border: 1px gray;
+    height:10px;
+
+}
+.area::-webkit-scrollbar-corner{
+    background: transparent;
 }
 
 .area::-webkit-scrollbar-thumb{
     background-color: #357476;
     border-radius: 20px;
     min-height: 30%;
-    border: 3px transparent;
 }
 .area::-webkit-scrollbar-thumb:hover {
     background-color: #4dd4d9;
-    border-radius: 20px;
-    border: 3px transparent;
 }
 .area{
     overflow-y: auto;
@@ -113,7 +112,6 @@ input:focus{
     padding: 8px;
     font-size: 12px;
     font-weight: 400;
-    font-family: 'Arial Black', 'Arial Обычный', 'Arial', sans-serif;
     border-radius: 8px;
     align-self: flex-end;
     margin: 8px;
